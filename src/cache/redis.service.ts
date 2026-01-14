@@ -8,20 +8,35 @@ export class RedisService implements OnModuleInit {
   private client: Redis;
 
   constructor(private readonly configService: ConfigService) {
-    const host = this.configService.get<string>('REDIS_HOST', 'localhost');
-    const port = this.configService.get<number>('REDIS_PORT', 6379);
-    const password = this.configService.get<string>('REDIS_PASSWORD');
+    // Prefer REDIS_URL if available, otherwise fall back to individual config
+    const redisUrl = this.configService.get<string>('REDIS_URL');
 
-    this.client = new Redis({
-      host,
-      port,
-      password,
-      retryStrategy: (times) => {
-        const delay = Math.min(times * 50, 2000);
-        return delay;
-      },
-      maxRetriesPerRequest: 3,
-    });
+    if (redisUrl) {
+      // Use REDIS_URL if provided
+      this.client = new Redis(redisUrl, {
+        retryStrategy: (times) => {
+          const delay = Math.min(times * 50, 2000);
+          return delay;
+        },
+        maxRetriesPerRequest: 3,
+      });
+    } else {
+      // Fallback to individual config (for backward compatibility)
+      const host = this.configService.get<string>('REDIS_HOST', 'localhost');
+      const port = this.configService.get<number>('REDIS_PORT', 6379);
+      const password = this.configService.get<string>('REDIS_PASSWORD');
+
+      this.client = new Redis({
+        host,
+        port,
+        password,
+        retryStrategy: (times) => {
+          const delay = Math.min(times * 50, 2000);
+          return delay;
+        },
+        maxRetriesPerRequest: 3,
+      });
+    }
 
     this.setupEventHandlers();
   }
