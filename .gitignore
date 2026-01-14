@@ -45,6 +45,9 @@ lerna-debug.log*
 # Prisma
 prisma/migrations
 
+# Lefthook
+.lefthook_local.yml
+
 # temp directory
 .temp
 .tmp
