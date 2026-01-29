@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
-import { validateConfig } from './config.validation';
+import { envSchema } from './env.schema';
 
 /**
  * Global configuration module that validates environment variables
@@ -12,9 +12,9 @@ import { validateConfig } from './config.validation';
     NestConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
-      validate: validateConfig,
+      validationSchema: envSchema,
       validationOptions: {
-        allowUnknown: false,
+        allowUnknown: true,
         abortEarly: false,
       },
     }),

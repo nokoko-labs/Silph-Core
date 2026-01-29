@@ -39,8 +39,8 @@ export class PrismaService
 
   private setupLogging() {
     this.$on('query', (e: { query: string; params: string; duration: number }) => {
-      const nodeEnv = this.configService.get<string>('NODE_ENV', 'development');
-      if (nodeEnv === 'development') {
+      const nodeEnv = this.configService.get<string>('NODE_ENV', 'dev');
+      if (nodeEnv === 'dev') {
         this.logger.debug(`Query: ${e.query}`);
         this.logger.debug(`Params: ${e.params}`);
         this.logger.debug(`Duration: ${e.duration}ms`);
