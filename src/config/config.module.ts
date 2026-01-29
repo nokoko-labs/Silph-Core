@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigModule as NestConfigModule } from '@nestjs/config';
 import { envSchema } from './env.schema';
 
@@ -7,6 +7,7 @@ import { envSchema } from './env.schema';
  * before the application starts. The application will crash if
  * critical variables are missing or invalid.
  */
+@Global()
 @Module({
   imports: [
     NestConfigModule.forRoot({
