@@ -7,7 +7,7 @@ import { PrismaService } from '@/database/prisma.service';
 import { AuthService } from './auth.service';
 
 jest.mock('bcryptjs', () => ({
-  compareSync: jest.fn().mockReturnValue(true),
+  compare: jest.fn().mockResolvedValue(true),
 }));
 
 describe('AuthService', () => {
@@ -43,7 +43,7 @@ describe('AuthService', () => {
   };
 
   beforeEach(async () => {
-    (bcrypt.compareSync as jest.Mock).mockClear().mockReturnValue(true);
+    (bcrypt.compare as jest.Mock).mockClear().mockResolvedValue(true);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -71,7 +71,7 @@ describe('AuthService', () => {
       expect(prisma.user.findUnique).toHaveBeenCalledWith({
         where: { email: 'admin@example.com' },
       });
-      expect(bcrypt.compareSync).toHaveBeenCalledWith('admin123', mockUser.password);
+      expect(bcrypt.compare).toHaveBeenCalledWith('admin123', mockUser.password);
     });
 
     it('should return null when user not found', async () => {
@@ -80,11 +80,11 @@ describe('AuthService', () => {
       const result = await service.validateUser('unknown@example.com', 'pass');
 
       expect(result).toBeNull();
-      expect(bcrypt.compareSync).not.toHaveBeenCalled();
+      expect(bcrypt.compare).not.toHaveBeenCalled();
     });
 
     it('should return null when password does not match', async () => {
-      (bcrypt.compareSync as jest.Mock).mockReturnValue(false);
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       const result = await service.validateUser('admin@example.com', 'wrong-password');
 
