@@ -43,7 +43,7 @@ lerna-debug.log*
 .env.local
 
 # Prisma
-prisma/migrations
+# prisma/migrations
 
 # Lefthook
 .lefthook_local.yml
@@ -60,3 +60,5 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+.pnpm-store

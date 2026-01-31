@@ -1,6 +1,6 @@
 {
   "name": "kime-api",
-  "version": "0.0.1",
+  "version": "1.0.0-beta.2",
   "description": "",
   "author": "",
   "private": true,
@@ -31,24 +31,32 @@
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
     "prisma:validate": "prisma validate",
-    "prepare": "lefthook install"
+    "prepare": "is-ci || lefthook install"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.2.5",
     "@nestjs/terminus": "^11.0.0",
-    "swagger-ui-express": "^5.0.1",
     "@prisma/client": "^5.20.0",
+    "bcryptjs": "^2.4.3",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "ioredis": "^5.3.2",
     "joi": "^17.13.3",
     "nestjs-pino": "^4.5.0",
+    "nestjs-zod": "^4.0.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "pino-http": "^10.0.0",
     "pino-pretty": "^11.0.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "swagger-ui-express": "^5.0.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -56,11 +64,17 @@
     "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@semantic-release/exec": "^7.1.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38",
     "@types/supertest": "^6.0.2",
+    "is-ci": "^4.1.0",
     "jest": "^30.0.0",
+    "jest-junit": "^16.0.0",
     "lefthook": "^1.7.9",
     "prisma": "^5.20.0",
     "source-map-support": "^0.5.21",
@@ -110,19 +124,38 @@
       "^@/(.*)$": "<rootDir>/$1"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/node_modules/**",
+      "!**/dist/**"
     ],
     "coverageDirectory": "../coverage",
     "coverageReporters": [
       "text",
       "lcov",
-      "html"
+      "html",
+      "json"
+    ],
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "outputDirectory": "coverage",
+          "outputName": "junit.xml",
+          "classNameTemplate": "{classname}",
+          "titleTemplate": "{title}",
+          "ancestorSeparator": " › ",
+          "usePathForSuiteName": "true"
+        }
+      ]
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/dist/",
       "/test/",
-      ".*\\.spec\\.ts$"
+      ".*\\.spec\\.ts$",
+      ".*\\.module\\.ts$",
+      "main.ts"
     ],
     "testEnvironment": "node"
   }
